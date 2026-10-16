@@ -1,0 +1,280 @@
+{
+  "date": "2026-10-16",
+  "tokenizer": "tiktoken:o200k_base",
+  "anthropic_model": null,
+  "servers": [
+    {
+      "server": "git",
+      "tools": 12,
+      "before": 1473,
+      "after": 1207,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 201,
+        "SL008": 0,
+        "SL003": 19,
+        "SL004": 0,
+        "SL002": 31,
+        "SL007": 15
+      }
+    },
+    {
+      "server": "time",
+      "tools": 2,
+      "before": 291,
+      "after": 289,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 0,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 2
+      }
+    },
+    {
+      "server": "fetch",
+      "tools": 1,
+      "before": 261,
+      "after": 235,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 22,
+        "SL008": 0,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 4
+      }
+    },
+    {
+      "server": "filesystem",
+      "tools": 14,
+      "before": 2877,
+      "after": 2640,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 238,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": -1
+      }
+    },
+    {
+      "server": "everything",
+      "tools": 13,
+      "before": 1718,
+      "after": 1522,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 195,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 1
+      }
+    },
+    {
+      "server": "memory",
+      "tools": 9,
+      "before": 2446,
+      "after": 2282,
+      "rules": {
+        "SL005": 0,
+        "SL006": 24,
+        "SL001": 0,
+        "SL008": 135,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 5
+      }
+    },
+    {
+      "server": "sequential-thinking",
+      "tools": 1,
+      "before": 1001,
+      "after": 984,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 15,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 2
+      }
+    },
+    {
+      "server": "github-npm",
+      "tools": 26,
+      "before": 3546,
+      "after": 3151,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 390,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 5
+      }
+    },
+    {
+      "server": "playwright",
+      "tools": 25,
+      "before": 4411,
+      "after": 3913,
+      "rules": {
+        "SL005": 0,
+        "SL006": 8,
+        "SL001": 0,
+        "SL008": 425,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 60,
+        "SL007": 5
+      }
+    },
+    {
+      "server": "notion",
+      "tools": 24,
+      "before": 17498,
+      "after": 4974,
+      "rules": {
+        "SL005": 8,
+        "SL006": 6,
+        "SL001": 0,
+        "SL008": 0,
+        "SL003": 0,
+        "SL004": 12386,
+        "SL002": 112,
+        "SL007": 12
+      }
+    },
+    {
+      "server": "sentry",
+      "tools": 9,
+      "before": 6147,
+      "after": 5874,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 135,
+        "SL003": 36,
+        "SL004": 0,
+        "SL002": 82,
+        "SL007": 20
+      }
+    },
+    {
+      "server": "context7",
+      "tools": 2,
+      "before": 1129,
+      "after": 1094,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 34,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 1
+      }
+    },
+    {
+      "server": "aws-documentation",
+      "tools": 5,
+      "before": 4866,
+      "after": 4706,
+      "rules": {
+        "SL005": 20,
+        "SL006": 0,
+        "SL001": 100,
+        "SL008": 0,
+        "SL003": 12,
+        "SL004": 0,
+        "SL002": 18,
+        "SL007": 10
+      }
+    },
+    {
+      "server": "duckduckgo",
+      "tools": 3,
+      "before": 1055,
+      "after": 968,
+      "rules": {
+        "SL005": 5,
+        "SL006": 0,
+        "SL001": 58,
+        "SL008": 0,
+        "SL003": 6,
+        "SL004": 0,
+        "SL002": 14,
+        "SL007": 4
+      }
+    },
+    {
+      "server": "arxiv",
+      "tools": 19,
+      "before": 3987,
+      "after": 3958,
+      "rules": {
+        "SL005": 0,
+        "SL006": 0,
+        "SL001": 0,
+        "SL008": 0,
+        "SL003": 0,
+        "SL004": 0,
+        "SL002": 0,
+        "SL007": 29
+      }
+    },
+    {
+      "server": "docs-lookup-fastmcp",
+      "tools": 4,
+      "before": 897,
+      "after": 611,
+      "rules": {
+        "SL005": 5,
+        "SL006": 28,
+        "SL001": 120,
+        "SL008": 0,
+        "SL003": 33,
+        "SL004": 29,
+        "SL002": 65,
+        "SL007": 6
+      }
+    }
+  ],
+  "totals": {
+    "tools": 169,
+    "before": 53603,
+    "after": 38408,
+    "a_before": 0,
+    "a_after": 0
+  },
+  "rule_totals": {
+    "SL005": 38,
+    "SL006": 66,
+    "SL001": 501,
+    "SL008": 1567,
+    "SL003": 106,
+    "SL004": 12415,
+    "SL002": 382,
+    "SL007": 120
+  }
+}

@@ -1,0 +1,8 @@
+[{"name": "t", "inputSchema": {"type": "object", "properties": {
+  "once": {"type": "object", "properties": {"inner": {"type": "string", "maxLength": 3}}, "description": "use-site description"},
+  "twice_a": {"$ref": "#/$defs/Twice"},
+  "twice_b": {"$ref": "#/$defs/Twice"},
+  "tree": {"$ref": "#/$defs/Node"}},
+  "$defs": {
+    "Twice": {"type": "integer"},
+    "Node": {"type": "object", "properties": {"children": {"type": "array", "items": {"$ref": "#/$defs/Node"}}}}}}}]

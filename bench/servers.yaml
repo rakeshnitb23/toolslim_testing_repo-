@@ -1,0 +1,27 @@
+# Public MCP servers snapshotted into bench/snapshots/<name>.json.
+# Refresh with:  python bench/snapshot.py            (all)
+#                python bench/snapshot.py git time   (some)
+# Tool lists are what each server returned for tools/list on the snapshot date with no
+# credentials (dummy tokens where a flag is required), so some servers expose fewer tools
+# than they would for a signed-in user.
+snapshot_date: "2026-10-16"
+servers:
+  # Official reference servers
+  - {name: git, command: "uvx mcp-server-git", lang: python}
+  - {name: time, command: "uvx mcp-server-time", lang: python}
+  - {name: fetch, command: "uvx mcp-server-fetch", lang: python}
+  - {name: filesystem, command: "npx -y @modelcontextprotocol/server-filesystem {tmpdir}", lang: typescript}
+  - {name: everything, command: "npx -y @modelcontextprotocol/server-everything", lang: typescript}
+  - {name: memory, command: "npx -y @modelcontextprotocol/server-memory", lang: typescript}
+  - {name: sequential-thinking, command: "npx -y @modelcontextprotocol/server-sequential-thinking", lang: typescript}
+  # Widely used third-party servers
+  - {name: github-npm, command: "npx -y @modelcontextprotocol/server-github", lang: typescript, env: {GITHUB_PERSONAL_ACCESS_TOKEN: dummy}}
+  - {name: playwright, command: "npx -y @playwright/mcp@latest", lang: typescript}
+  - {name: notion, command: "npx -y @notionhq/notion-mcp-server", lang: typescript}
+  - {name: sentry, command: "npx -y @sentry/mcp-server --access-token=dummy", lang: typescript}
+  - {name: context7, command: "npx -y @upstash/context7-mcp", lang: typescript}
+  # Python FastMCP servers (Pydantic-generated schemas)
+  - {name: aws-documentation, command: "uvx awslabs.aws-documentation-mcp-server@latest", lang: python}
+  - {name: duckduckgo, command: "uvx duckduckgo-mcp-server", lang: python}
+  - {name: arxiv, command: "uvx arxiv-mcp-server", lang: python}
+  - {name: docs-lookup-fastmcp, command: "python bench/servers/docs_lookup_server.py", lang: python}

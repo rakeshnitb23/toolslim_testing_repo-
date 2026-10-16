@@ -1,0 +1,4 @@
+[{"name": "t", "description": "Search the index.\n\nReturns ranked results.\n    - nested bullet",
+  "inputSchema": {"type": "object", "properties": {
+    "q": {"type": "string", "description": "The query text."},
+    "description": {"type": "string", "description": "keep __dunder__ and *glob*"}}}}]

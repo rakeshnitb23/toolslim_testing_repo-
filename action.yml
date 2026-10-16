@@ -1,0 +1,118 @@
+name: "toolslim check"
+description: "Fail a PR when LLM tool / MCP schema tokens grow past budget, and comment the diff."
+author: "Rakesh Singh, sudheer215s"
+branding:
+  icon: "scissors"
+  color: "green"
+
+inputs:
+  source:
+    description: "Path to a JSON file of tool definitions (MCP, Anthropic, OpenAI or tools/list)."
+    required: false
+    default: ""
+  mcp:
+    description: 'Instead of a file, launch an MCP server over stdio, e.g. "uvx mcp-server-git".'
+    required: false
+    default: ""
+  baseline:
+    description: "Baseline JSON. If missing and `source` is a file, it is computed from base-ref."
+    required: false
+    default: "token-baseline.json"
+  base-ref:
+    description: "Branch to diff against when no baseline file exists (defaults to the PR base)."
+    required: false
+    default: ${{ github.base_ref }}
+  max-increase:
+    description: "Allowed growth: a percentage ('10%') or an absolute token count ('500')."
+    required: false
+    default: "10%"
+  tokenizer:
+    description: "o200k_base | cl100k_base | anthropic[:model] (anthropic needs ANTHROPIC_API_KEY)."
+    required: false
+    default: "o200k_base"
+  comment:
+    description: "Post / update a sticky PR comment with the report."
+    required: false
+    default: "true"
+  python-version:
+    required: false
+    default: "3.12"
+  toolslim-version:
+    description: "pip requirement for toolslim (e.g. 'toolslim==0.1.0'). Use '.' to install the checked-out repo."
+    required: false
+    default: "toolslim"
+
+outputs:
+  exit-code:
+    description: "0 = within budget, 1 = over budget, 2 = usage error."
+    value: ${{ steps.check.outputs.exit-code }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install toolslim
+      shell: bash
+      run: |
+        extras=""
+        [ -n "${{ inputs.mcp }}" ] && extras="mcp"
+        case "${{ inputs.tokenizer }}" in anthropic*) extras="${extras:+$extras,}anthropic";; esac
+        req="${{ inputs.toolslim-version }}"
+        if [ -n "$extras" ]; then req="${req}[${extras}]"; fi
+        python -m pip install --quiet "$req"
+
+    - name: Compute baseline from base branch
+      shell: bash
+      env:
+        SOURCE: ${{ inputs.source }}
+        BASELINE: ${{ inputs.baseline }}
+        BASE_REF: ${{ inputs.base-ref }}
+        TOKENIZER: ${{ inputs.tokenizer }}
+      run: |
+        if [ -f "$BASELINE" ]; then echo "using committed baseline $BASELINE"; exit 0; fi
+        if [ -z "$SOURCE" ] || [ -z "$BASE_REF" ]; then
+          echo "::error::no baseline at $BASELINE and nothing to diff against (set base-ref or commit a baseline)"; exit 2
+        fi
+        git fetch --quiet --depth=1 origin "$BASE_REF"
+        if git cat-file -e "FETCH_HEAD:$SOURCE" 2>/dev/null; then
+          git show "FETCH_HEAD:$SOURCE" > "$RUNNER_TEMP/toolslim-base.json"
+          toolslim check "$RUNNER_TEMP/toolslim-base.json" -b "$BASELINE" -t "$TOKENIZER" --write-baseline
+        else
+          echo "$SOURCE is new on this branch; using the current file as baseline"
+          toolslim check "$SOURCE" -b "$BASELINE" -t "$TOKENIZER" --write-baseline
+        fi
+
+    - name: Check token budget
+      id: check
+      shell: bash
+      env:
+        SOURCE: ${{ inputs.source }}
+        MCP: ${{ inputs.mcp }}
+        BASELINE: ${{ inputs.baseline }}
+        MAX_INCREASE: ${{ inputs.max-increase }}
+        TOKENIZER: ${{ inputs.tokenizer }}
+      run: |
+        set +e
+        if [ -n "$MCP" ]; then
+          toolslim check --mcp "$MCP" -b "$BASELINE" --max-increase "$MAX_INCREASE" -t "$TOKENIZER" --markdown toolslim-report.md
+        else
+          toolslim check "$SOURCE" -b "$BASELINE" --max-increase "$MAX_INCREASE" -t "$TOKENIZER" --markdown toolslim-report.md
+        fi
+        code=$?
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        [ -f toolslim-report.md ] && cat toolslim-report.md >> "$GITHUB_STEP_SUMMARY"
+        exit 0
+
+    - name: Comment on PR
+      if: inputs.comment == 'true' && github.event_name == 'pull_request' && hashFiles('toolslim-report.md') != ''
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: toolslim
+        path: toolslim-report.md
+
+    - name: Enforce budget
+      shell: bash
+      run: exit ${{ steps.check.outputs.exit-code }}

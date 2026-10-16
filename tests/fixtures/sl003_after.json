@@ -1,0 +1,5 @@
+[{"name": "t", "inputSchema": {"type": "object", "required": ["must"], "properties": {
+  "opt": {"type": ["string", "null"]},
+  "must": {"type": ["string", "null"], "default": null},
+  "nonnull_default": {"type": "integer", "default": 10},
+  "default": {"type": "string", "description": "a property named default"}}}}]

@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "toolslim"
+version = "0.1.0"
+description = "Measure and losslessly slim the LLM tool / MCP schemas an agent re-sends every turn."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [
+  { name = "Rakesh Singh", email = "110342854+rakeshnitb23@users.noreply.github.com" },
+  { name = "sudheer215s", email = "singhsudheer215@gmail.com" },
+]
+keywords = ["llm", "mcp", "tokens", "json-schema", "agents", "tool-calling"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+dependencies = [
+  "pydantic>=2.6",
+  "tiktoken>=0.7",
+  "typer>=0.12",
+  "rich>=13",
+]
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.2"]
+anthropic = ["anthropic>=0.40"]
+test = [
+  "pytest>=8",
+  "hypothesis>=6.100",
+  "hypothesis-jsonschema>=0.23",
+  "jsonschema>=4.21",
+  "pyyaml>=6",
+]
+dev = ["toolslim[mcp,anthropic,test]", "ruff>=0.6", "pre-commit>=3"]
+
+[project.scripts]
+toolslim = "toolslim.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/rakeshnitb23/toolslim"
+Issues = "https://github.com/rakeshnitb23/toolslim/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["toolslim"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["RUF012"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,130 @@
+[
+  {
+    "name": "search_users",
+    "description": "  Search users.\n\n    Returns   a list.  ",
+    "inputSchema": {
+      "$defs": {
+        "Address": {
+          "properties": {
+            "street": {
+              "title": "Street",
+              "type": "string"
+            },
+            "city": {
+              "title": "City",
+              "type": "string"
+            },
+            "zip_code": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Zip Code"
+            }
+          },
+          "required": [
+            "street",
+            "city"
+          ],
+          "title": "Address",
+          "type": "object"
+        },
+        "Filter": {
+          "description": "Filter for search.",
+          "properties": {
+            "status": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "open",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Status"
+            },
+            "min_score": {
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Min Score"
+            }
+          },
+          "title": "Filter",
+          "type": "object"
+        }
+      },
+      "properties": {
+        "user_id": {
+          "description": "The user ID",
+          "title": "User Id",
+          "type": "string"
+        },
+        "query": {
+          "description": "\n        Full-text query.\n\n        Supports **boolean** operators.\n    ",
+          "title": "Query",
+          "type": "string"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Maximum number of results",
+          "title": "Limit"
+        },
+        "address": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Address"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "filter": {
+          "$ref": "#/$defs/Filter"
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        }
+      },
+      "required": [
+        "user_id",
+        "query",
+        "filter"
+      ],
+      "title": "search_usersArguments",
+      "type": "object"
+    }
+  }
+]

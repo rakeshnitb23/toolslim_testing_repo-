@@ -1,0 +1,5 @@
+[{"name": "t", "inputSchema": {"type": "object", "properties": {
+  "user_id": {"type": "string"},
+  "repoName": {"type": "string"},
+  "limit": {"type": "integer", "description": "Maximum number of results"},
+  "issue_ids": {"type": "array"}}}}]

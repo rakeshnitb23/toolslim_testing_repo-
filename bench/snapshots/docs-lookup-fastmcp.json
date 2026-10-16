@@ -1,0 +1,320 @@
+[
+  {
+    "name": "search_documents",
+    "description": "\nSearch the user's documents and return the best-matching chunks.\n\nEach chunk includes its **document id**, page and a stable chunk id so answers\ncan cite it.\n",
+    "inputSchema": {
+      "properties": {
+        "query": {
+          "description": "Natural-language question or keywords",
+          "title": "Query",
+          "type": "string"
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SearchFilters"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "top_k": {
+          "default": 5,
+          "description": "Maximum number of chunks to return",
+          "maximum": 50,
+          "minimum": 1,
+          "title": "Top K",
+          "type": "integer"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "hybrid",
+                "vector",
+                "keyword"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        },
+        "rerank": {
+          "default": true,
+          "title": "Rerank",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "type": "object",
+      "$defs": {
+        "DateRange": {
+          "properties": {
+            "start": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Inclusive start date",
+              "title": "Start"
+            },
+            "end": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "Inclusive end date",
+              "title": "End"
+            }
+          },
+          "title": "DateRange",
+          "type": "object"
+        },
+        "SearchFilters": {
+          "description": "Restrict which documents are searched.",
+          "properties": {
+            "workspace_id": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "The workspace ID",
+              "title": "Workspace Id"
+            },
+            "file_types": {
+              "anyOf": [
+                {
+                  "items": {
+                    "enum": [
+                      "pdf",
+                      "docx",
+                      "md",
+                      "txt"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "File Types"
+            },
+            "uploaded": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/DateRange"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "tags": {
+              "description": "Only documents with all tags",
+              "items": {
+                "type": "string"
+              },
+              "title": "Tags",
+              "type": "array"
+            }
+          },
+          "title": "SearchFilters",
+          "type": "object"
+        }
+      },
+      "title": "search_documentsArguments"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "title": "search_documentsOutput"
+    }
+  },
+  {
+    "name": "get_chunk",
+    "description": "Fetch one chunk by id, optionally with neighbouring chunks for context.",
+    "inputSchema": {
+      "properties": {
+        "document_id": {
+          "description": "The document ID",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "chunk_id": {
+          "description": "The chunk ID",
+          "title": "Chunk Id",
+          "type": "string"
+        },
+        "include_neighbors": {
+          "anyOf": [
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Neighbor chunks",
+          "title": "Include Neighbors"
+        }
+      },
+      "required": [
+        "document_id",
+        "chunk_id"
+      ],
+      "type": "object",
+      "title": "get_chunkArguments"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "title": "get_chunkOutput"
+    }
+  },
+  {
+    "name": "list_documents",
+    "description": "List documents the caller can read, newest first.",
+    "inputSchema": {
+      "properties": {
+        "workspace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workspace Id"
+        },
+        "page": {
+          "default": 1,
+          "description": "Page number",
+          "minimum": 1,
+          "title": "Page",
+          "type": "integer"
+        },
+        "page_size": {
+          "default": 20,
+          "description": "Page size",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Page Size",
+          "type": "integer"
+        },
+        "sort": {
+          "anyOf": [
+            {
+              "enum": [
+                "name",
+                "uploaded_at",
+                "size"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sort"
+        }
+      },
+      "type": "object",
+      "title": "list_documentsArguments"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "title": "list_documentsOutput"
+    }
+  },
+  {
+    "name": "get_document_metadata",
+    "description": "Return title, page count, upload date and content hash for one document.",
+    "inputSchema": {
+      "properties": {
+        "document_id": {
+          "description": "Document ID",
+          "title": "Document Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id"
+      ],
+      "type": "object",
+      "title": "get_document_metadataArguments"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "type": "object",
+      "title": "get_document_metadataOutput"
+    }
+  }
+]

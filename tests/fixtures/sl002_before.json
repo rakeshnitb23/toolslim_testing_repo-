@@ -1,0 +1,10 @@
+[{"name": "t", "inputSchema": {"type": "object", "properties": {
+  "a": {"anyOf": [{"type": "string"}, {"type": "null"}], "default": null},
+  "b": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+  "c": {"anyOf": [{"type": "string", "enum": ["x", "y"]}, {"type": "null"}]},
+  "d": {"anyOf": [{"type": "object", "properties": {"k": {"type": "string"}}, "required": ["k"]}, {"type": "null"}]},
+  "keep_enum_mix": {"anyOf": [{"type": "string", "enum": ["x"]}, {"type": "integer"}]},
+  "keep_overlap": {"oneOf": [{"type": "integer"}, {"type": "number"}]},
+  "keep_ref": {"anyOf": [{"$ref": "#/$defs/X"}, {"type": "null"}]},
+  "keep_numeric_kw": {"anyOf": [{"type": "integer", "minimum": 1}, {"type": "number"}]}
+}, "$defs": {"X": {"type": "string"}}}}]

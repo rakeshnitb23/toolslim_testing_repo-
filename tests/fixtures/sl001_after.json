@@ -1,0 +1,8 @@
+[{"name": "get_user", "inputSchema": {"type": "object",
+  "properties": {
+    "user_id": {"type": "string"},
+    "title": {"type": "string", "description": "A property literally called title"},
+    "mode": {"title": "Search mode to use", "type": "string"},
+    "address": {"$ref": "#/$defs/Address"}},
+  "$defs": {"Address": {"type": "object",
+    "properties": {"zip_code": {"type": "string"}}}}}}]

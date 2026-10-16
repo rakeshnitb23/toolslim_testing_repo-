@@ -1,0 +1,2 @@
+[{"name": "zeta", "inputSchema": {"required": ["b"], "properties": {"b": {"type": "string", "description": "B"}, "a": {"type": "string"}}, "type": "object"}},
+ {"name": "alpha", "inputSchema": {"type": "object"}}]

@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uvx ruff check .
+      - run: uvx ruff format --check .
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv pip install --system -e ".[test,mcp]" pytest-xdist
+      # Includes bidirectional property-based equivalence on every bench snapshot.
+      - run: python -m pytest -n auto
+
+  thorough-equivalence:
+    # Nightly-strength run on main only: 200 examples per direction, every mutant.
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - run: uv pip install --system -e ".[test]" pytest-xdist
+      - run: python -m pytest -n auto tests/test_equivalence.py
+        env:
+          TOOLSLIM_EQUIV_THOROUGH: "1"
+
+  # Dogfood: this repo's own Action guards the example tool file.
+  token-budget:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          source: examples/pydantic_tools.json
+          baseline: ${{ runner.temp }}/token-baseline.json
+          max-increase: "10%"
+          toolslim-version: "."
