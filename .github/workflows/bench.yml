@@ -1,0 +1,55 @@
+name: Benchmark
+
+# Run by hand: Actions tab -> Benchmark -> Run workflow.
+# Needs a repo secret ANTHROPIC_API_KEY (Settings -> Secrets and variables -> Actions).
+# count_tokens is free; this run makes ~2 calls per server plus a few for calibration.
+# Without the secret it still runs, with tiktoken numbers only.
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Claude model for count_tokens"
+        default: "claude-sonnet-5-5"
+      commit:
+        description: "Commit the regenerated bench/RESULTS.md back to the branch"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e ".[anthropic,test]"
+      - name: Run benchmark
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            python bench/run_bench.py --anthropic --model "${{ inputs.model }}"
+          else
+            echo "::warning::ANTHROPIC_API_KEY secret not set; tiktoken numbers only"
+            python bench/run_bench.py
+          fi
+          cat bench/RESULTS.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bench-results
+          path: |
+            bench/RESULTS.md
+            bench/results.json
+      - name: Commit results
+        if: inputs.commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bench/RESULTS.md bench/results.json
+          git diff --cached --quiet || git commit -m "bench: regenerate results (${{ inputs.model }})" && git push
